@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System.Runtime.Serialization.Formatters;
 
 namespace TwinStick
 {
@@ -8,6 +9,11 @@ namespace TwinStick
     {
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
+
+        private Camera camera;
+        private Player player;
+        private Texture2D playerTexture;
+        private Texture2D pixelTexture;
 
         public Game1()
         {
@@ -19,6 +25,8 @@ namespace TwinStick
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
+            Rectangle roomBounds = new Rectangle(0,0,1920, 1080);
+            camera = new Camera(GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height, roomBounds);
 
             base.Initialize();
         }
@@ -28,6 +36,18 @@ namespace TwinStick
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // TODO: use this.Content to load your game content here
+            playerTexture = new Texture2D(GraphicsDevice, 32, 32);
+            Color[] data = new Color[32 * 32];
+            for (int i = 0; i < data.Length; i++)
+            {
+                data[i] = Color.White;
+            }
+            playerTexture.SetData(data);
+
+            pixelTexture = new Texture2D(GraphicsDevice, 1, 1);
+            pixelTexture.SetData(new[] { Color.White });
+
+            player = new Player(playerTexture, pixelTexture, new Vector2(960, 540));
         }
 
         protected override void Update(GameTime gameTime)
@@ -36,17 +56,36 @@ namespace TwinStick
                 Exit();
 
             // TODO: Add your update logic here
+            player.Update(gameTime, camera);
+            camera.Follow(player.Position);
 
             base.Update(gameTime);
         }
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.Black);
 
             // TODO: Add your drawing code here
+            _spriteBatch.Begin(transformMatrix: camera.GetTransformMatrix());
+            DrawDebugGrid(_spriteBatch, 64, camera.RoomBounds);
+            player.Draw(_spriteBatch);
+            _spriteBatch.End();
 
             base.Draw(gameTime); 
+        }
+
+        private void DrawDebugGrid(SpriteBatch sb, int cellSize, Rectangle bounds)
+        {
+            for (int x = bounds.Left; x <= bounds.Right; x += cellSize)
+            {
+                sb.Draw(pixelTexture, new Rectangle(x, bounds.Top, 1, bounds.Height), Color.Gray);
+            }
+
+            for (int y = bounds.Top; y <= bounds.Bottom; y += cellSize)
+            {
+                sb.Draw(pixelTexture, new Rectangle(bounds.Left, y, bounds.Width, 1), Color.Gray);
+            }
         }
     }
 }
