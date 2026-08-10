@@ -15,6 +15,9 @@ namespace TwinStick
         private Texture2D playerTexture;
         private Texture2D pixelTexture;
 
+        private ProjectileManager projectileManager;
+        private Texture2D projectileTexture;
+
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
@@ -48,6 +51,13 @@ namespace TwinStick
             pixelTexture.SetData(new[] { Color.White });
 
             player = new Player(playerTexture, pixelTexture, new Vector2(960, 540));
+
+            projectileTexture = new Texture2D(GraphicsDevice, 8, 8);
+            Color[] projData = new Color[8 * 8];
+            for (int i = 0; i < projData.Length;i++) projData[i] = Color.White;
+            projectileTexture.SetData(projData);
+
+            projectileManager = new ProjectileManager(projectileTexture);
         }
 
         protected override void Update(GameTime gameTime)
@@ -58,6 +68,7 @@ namespace TwinStick
             // TODO: Add your update logic here
             player.Update(gameTime, camera);
             camera.Follow(player.Position);
+            projectileManager.Update(gameTime, player, camera.RoomBounds);
 
             base.Update(gameTime);
         }
@@ -70,6 +81,7 @@ namespace TwinStick
             _spriteBatch.Begin(transformMatrix: camera.GetTransformMatrix());
             DrawDebugGrid(_spriteBatch, 64, camera.RoomBounds);
             player.Draw(_spriteBatch);
+            projectileManager.Draw(_spriteBatch);
             _spriteBatch.End();
 
             base.Draw(gameTime); 

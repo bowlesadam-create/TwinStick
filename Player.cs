@@ -13,6 +13,16 @@ namespace TwinStick
         public Texture2D Texture;
         public Texture2D DebugLineTexture;
         public float FacingLineLength = 40f;
+        public float DashSpeed = 600f;
+        public float DashDuration = 0.15f;
+        public float DashCooldown = 0.6f;
+
+        private float dashTimer = 0f;
+        private float dashCooldownTimer = 0f;
+        private Vector2 dashDirection;
+        private bool isDashing = false;
+
+        private KeyboardState previousKeyboardState;
 
         public Rectangle BoundingBox => new Rectangle(
             (int)Position.X - Texture.Width /2,
@@ -29,12 +39,51 @@ namespace TwinStick
         public void Update(GameTime gameTime, Camera camera)
         {
             float delta = (float)gameTime.ElapsedGameTime.TotalSeconds;
-            HandleMovement(delta);
+
+            HandleDashInput(delta);
+
+            if (isDashing)
+            {
+                Position += dashDirection * DashSpeed * delta;
+                dashTimer -= delta;
+                if (dashTimer <= 0f) isDashing = false;
+            }
+            else
+            {
+                HandleMovement(delta);
+            }
+            
             HandleAim(camera);
+
+            previousKeyboardState = Keyboard.GetState();
         }
 
-        private void HandleMovement(float delta) {
+        private void HandleDashInput(float delta)
+        {
+            if (dashCooldownTimer > 0f)
+            {
+                dashCooldownTimer -= delta;
+            }
+
             KeyboardState keyboard = Keyboard.GetState();
+            bool spacePressed = keyboard.IsKeyDown(Keys.Space) && previousKeyboardState.IsKeyUp(Keys.Space);
+
+            if (spacePressed && !isDashing && dashCooldownTimer <= 0f)
+            {
+                Vector2 moveDirection = GetCurrentMoveDirection(keyboard);
+
+                if (moveDirection == Vector2.Zero)
+                    moveDirection = new Vector2((float)System.Math.Cos(Rotation), (float)System.Math.Sin(Rotation));
+
+                dashDirection = moveDirection;
+                isDashing = true;
+                dashTimer = DashDuration;
+                dashCooldownTimer = DashCooldown;
+            }
+        }
+
+        private Vector2 GetCurrentMoveDirection(KeyboardState keyboard) 
+        {
             Vector2 direction = Vector2.Zero;
 
             if (keyboard.IsKeyDown(Keys.W)) direction.Y -= 1;
@@ -42,9 +91,20 @@ namespace TwinStick
             if (keyboard.IsKeyDown(Keys.A)) direction.X -= 1;
             if (keyboard.IsKeyDown(Keys.D)) direction.X += 1;
 
-            if(direction != Vector2.Zero)
+            if (direction != Vector2.Zero)
             {
-                direction.Normalize(); // account for diagmovement sqrt2 issue
+                direction.Normalize();
+            }
+
+            return direction;
+        }
+
+        private void HandleMovement(float delta) {
+            KeyboardState keyboard = Keyboard.GetState();
+            Vector2 direction = GetCurrentMoveDirection(keyboard);
+
+            if (direction != Vector2.Zero)
+            {
                 Position += direction * Speed * delta;
             }
         }
