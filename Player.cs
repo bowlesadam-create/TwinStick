@@ -36,7 +36,7 @@ namespace TwinStick
             Position = startPosition;
         }
 
-        public void Update(GameTime gameTime, Camera camera)
+        public void Update(GameTime gameTime, Camera camera, TiledMap map)
         {
             float delta = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
@@ -44,13 +44,14 @@ namespace TwinStick
 
             if (isDashing)
             {
-                Position += dashDirection * DashSpeed * delta;
+                Vector2 dashMovement = dashDirection * DashSpeed * delta;
+                TryMove(dashMovement, map);
                 dashTimer -= delta;
                 if (dashTimer <= 0f) isDashing = false;
             }
             else
             {
-                HandleMovement(delta);
+                HandleMovement(delta, map);
             }
             
             HandleAim(camera);
@@ -99,14 +100,48 @@ namespace TwinStick
             return direction;
         }
 
-        private void HandleMovement(float delta) {
+        private void HandleMovement(float delta, TiledMap map) {
             KeyboardState keyboard = Keyboard.GetState();
             Vector2 direction = GetCurrentMoveDirection(keyboard);
 
             if (direction != Vector2.Zero)
             {
-                Position += direction * Speed * delta;
+                Vector2 movement = direction * Speed * delta;
+                TryMove(movement, map);
             }
+        }
+
+        private void TryMove(Vector2 movement, TiledMap map)
+        {
+            Vector2 newPositionX = Position + new Vector2(movement.X, 0);
+            if (!IsCollidingAt(newPositionX, map))
+            {
+                Position = newPositionX;
+            }
+
+            Vector2 newPositionY = Position + new Vector2(0, movement.Y);
+            if (!IsCollidingAt(newPositionY, map))
+            {
+                Position = newPositionY;
+            }
+        }
+
+        private bool IsCollidingAt(Vector2 position, TiledMap map)
+        {
+            Rectangle box = new Rectangle(
+                (int)position.X - Texture.Width / 2,
+                (int)position.Y - Texture.Height / 2,
+                Texture.Width, Texture.Height);
+
+            int leftTile = box.Left / map.TileWidth;
+            int rightTile = (box.Right - 1) / map.TileWidth;
+            int topTile = box.Top / map.TileHeight;
+            int bottomTile = (box.Bottom - 1) / map.TileHeight;
+
+            return map.IsCollidableAt(leftTile, topTile) ||
+                   map.IsCollidableAt(rightTile, topTile) ||
+                   map.IsCollidableAt(leftTile, bottomTile) ||
+                   map.IsCollidableAt(rightTile, bottomTile);
         }
 
         private void HandleAim(Camera camera) 

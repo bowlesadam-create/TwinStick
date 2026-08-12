@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System;
 using System.Runtime.Serialization.Formatters;
 
 namespace TwinStick
@@ -17,6 +18,10 @@ namespace TwinStick
 
         private ProjectileManager projectileManager;
         private Texture2D projectileTexture;
+
+        private TiledMap tiledMap;
+        private Texture2D floorTexture;
+        private Texture2D wallTexture;
 
         public Game1()
         {
@@ -58,6 +63,19 @@ namespace TwinStick
             projectileTexture.SetData(projData);
 
             projectileManager = new ProjectileManager(projectileTexture);
+
+            floorTexture = new Texture2D(GraphicsDevice, 32, 32);
+            Color[] floorData = new Color[32 * 32];
+            for (int i = 0; i < floorData.Length; i++) floorData[i] = Color.DarkSlateGray;
+            floorTexture.SetData(floorData);
+
+            wallTexture = new Texture2D(GraphicsDevice, 32, 32);
+            Color[] wallData = new Color[32 * 32];
+            for (int i = 0; i < wallData.Length; i++) wallData[i] = Color.SaddleBrown;
+            wallTexture.SetData(wallData);
+            
+            tiledMap = TiledMap.Load("Content/Tilesets/testMap.tmx");
+            
         }
 
         protected override void Update(GameTime gameTime)
@@ -66,7 +84,7 @@ namespace TwinStick
                 Exit();
 
             // TODO: Add your update logic here
-            player.Update(gameTime, camera);
+            player.Update(gameTime, camera, tiledMap);
             camera.Follow(player.Position);
             projectileManager.Update(gameTime, player, camera.RoomBounds);
 
@@ -79,6 +97,7 @@ namespace TwinStick
 
             // TODO: Add your drawing code here
             _spriteBatch.Begin(transformMatrix: camera.GetTransformMatrix());
+            tiledMap.Draw(_spriteBatch, floorTexture,wallTexture);
             DrawDebugGrid(_spriteBatch, 64, camera.RoomBounds);
             player.Draw(_spriteBatch);
             projectileManager.Draw(_spriteBatch);
