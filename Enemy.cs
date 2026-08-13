@@ -15,6 +15,7 @@ namespace TwinStick
         public int Health = 30;
         public bool IsActive = true;
         public Texture2D Texture;
+        public Spawner OriginSpawner;
 
         public Rectangle BoundingBox => new Rectangle(
             (int)Position.X - Texture.Width / 2,
@@ -79,6 +80,7 @@ namespace TwinStick
             if (Health <= 0)
             {
                 IsActive = false;
+                OriginSpawner?.NotifyEnemyDied();
             }
         }
 

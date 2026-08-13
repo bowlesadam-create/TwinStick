@@ -14,9 +14,11 @@ namespace TwinStick
             this.enemyTexture = enemyTexture;
         }
 
-        public void SpawnEnemy(Vector2 position)
+        public void SpawnEnemy(Vector2 position, Spawner originSpawner = null)
         {
-            enemies.Add(new Enemy(enemyTexture, position));
+            Enemy enemy = new Enemy(enemyTexture, position);
+            enemy.OriginSpawner = originSpawner;
+            enemies.Add(enemy);
         }
 
         public void Update(GameTime gameTime, Vector2 playerPosition, TiledMap map)

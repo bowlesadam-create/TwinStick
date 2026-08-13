@@ -26,6 +26,9 @@ namespace TwinStick
         private EnemyManager enemyManager;
         private Texture2D enemyTexture;
 
+        private SpawnerManager spawnerManager;
+        private Texture2D spawnerTexture;
+
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
@@ -90,6 +93,14 @@ namespace TwinStick
             enemyManager.SpawnEnemy(new Vector2(960, 200));
             enemyManager.SpawnEnemy(new Vector2(1200, 700));
 
+            spawnerTexture = new Texture2D(GraphicsDevice, 36, 36);
+            Color[] spawnerData = new Color[36 * 36];
+            for (int i = 0; i < spawnerData.Length; i++) spawnerData[i] = Color.White;
+            spawnerTexture.SetData(spawnerData);
+
+            spawnerManager = new SpawnerManager(spawnerTexture);
+            spawnerManager.AddSpawner(new Vector2(700, 400));
+
         }
 
         protected override void Update(GameTime gameTime)
@@ -103,6 +114,8 @@ namespace TwinStick
             projectileManager.Update(gameTime, player, camera.RoomBounds);
             enemyManager.Update(gameTime, player.Position, tiledMap);
             enemyManager.CheckProjectileCollision(projectileManager.Projectiles);
+            spawnerManager.Update(gameTime, enemyManager);
+            spawnerManager.CheckProjectileCollisions(projectileManager.Projectiles);
 
             base.Update(gameTime);
         }
@@ -118,6 +131,7 @@ namespace TwinStick
             player.Draw(_spriteBatch);
             projectileManager.Draw(_spriteBatch);
             enemyManager.Draw(_spriteBatch);
+            spawnerManager.Draw(_spriteBatch);
             _spriteBatch.End();
 
             base.Draw(gameTime); 
