@@ -23,6 +23,9 @@ namespace TwinStick
         private Texture2D floorTexture;
         private Texture2D wallTexture;
 
+        private EnemyManager enemyManager;
+        private Texture2D enemyTexture;
+
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
@@ -75,7 +78,18 @@ namespace TwinStick
             wallTexture.SetData(wallData);
             
             tiledMap = TiledMap.Load("Content/Tilesets/testMap.tmx");
-            
+
+            enemyTexture = new Texture2D(GraphicsDevice, 28, 28);
+            Color[] enemyData = new Color[28 * 28];
+            for (int i = 0; i < enemyData.Length; i++) enemyData[i] = Color.White;
+            enemyTexture.SetData(enemyData);
+
+            enemyManager = new EnemyManager(enemyTexture);
+
+            // temporary hardcoded spawn for testing, before object-layer parsing exists
+            enemyManager.SpawnEnemy(new Vector2(960, 200));
+            enemyManager.SpawnEnemy(new Vector2(1200, 700));
+
         }
 
         protected override void Update(GameTime gameTime)
@@ -87,6 +101,8 @@ namespace TwinStick
             player.Update(gameTime, camera, tiledMap);
             camera.Follow(player.Position);
             projectileManager.Update(gameTime, player, camera.RoomBounds);
+            enemyManager.Update(gameTime, player.Position, tiledMap);
+            enemyManager.CheckProjectileCollision(projectileManager.Projectiles);
 
             base.Update(gameTime);
         }
@@ -101,6 +117,7 @@ namespace TwinStick
             DrawDebugGrid(_spriteBatch, 64, camera.RoomBounds);
             player.Draw(_spriteBatch);
             projectileManager.Draw(_spriteBatch);
+            enemyManager.Draw(_spriteBatch);
             _spriteBatch.End();
 
             base.Draw(gameTime); 

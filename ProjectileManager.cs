@@ -18,6 +18,8 @@ namespace TwinStick
 
         private MouseState previousMouseState;
 
+        public List<Projectile> Projectiles => projectiles;
+
         public ProjectileManager(Texture2D projectileTexture)
         {
             this.projectileTexture = projectileTexture;
