@@ -29,6 +29,8 @@ namespace TwinStick
         private SpawnerManager spawnerManager;
         private Texture2D spawnerTexture;
 
+        private Minimap minimap;
+
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
@@ -101,6 +103,11 @@ namespace TwinStick
             spawnerManager = new SpawnerManager(spawnerTexture);
             spawnerManager.AddSpawner(new Vector2(700, 400));
 
+            Rectangle minimapBounds = new Rectangle(
+                GraphicsDevice.Viewport.Width - 220, 20,
+                200, 200 * tiledMap.Height / tiledMap.Width);
+            minimap = new Minimap(pixelTexture, tiledMap, minimapBounds);
+
         }
 
         protected override void Update(GameTime gameTime)
@@ -132,6 +139,10 @@ namespace TwinStick
             projectileManager.Draw(_spriteBatch);
             enemyManager.Draw(_spriteBatch);
             spawnerManager.Draw(_spriteBatch);
+            _spriteBatch.End();
+
+            _spriteBatch.Begin();
+            minimap.Draw(_spriteBatch, player.Position, enemyManager.GetEnemyPositions(), spawnerManager.GetSpawnerPositions());
             _spriteBatch.End();
 
             base.Draw(gameTime); 

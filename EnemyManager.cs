@@ -9,6 +9,12 @@ namespace TwinStick
         private List<Enemy> enemies = new List<Enemy>();
         private Texture2D enemyTexture;
 
+        public IEnumerable<Vector2> GetEnemyPositions()
+        {
+            foreach (var enemy in enemies)
+                if (enemy.IsActive) yield return enemy.Position;
+        }
+
         public EnemyManager(Texture2D enemyTexture)
         {
             this.enemyTexture = enemyTexture;

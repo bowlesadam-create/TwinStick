@@ -9,6 +9,12 @@ namespace TwinStick
         private List<Spawner> spawners = new List<Spawner>();
         private Texture2D spawnerTexture;
 
+        public IEnumerable<Vector2> GetSpawnerPositions()
+        {
+            foreach (var spawner in spawners)
+                if (spawner.IsActive) yield return spawner.Position;
+        }
+
         public SpawnerManager(Texture2D spawnerTexture)
         {
             this.spawnerTexture = spawnerTexture;
