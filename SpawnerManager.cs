@@ -50,6 +50,19 @@ namespace TwinStick
             }
         }
 
+        public void CheckMeleeCollisions(MeleeAttack melee)
+        {
+            foreach (var spawner in spawners)
+            {
+                if (spawner.IsActive && melee.IsInArc(spawner.Position))
+                {
+                    if (melee.TryRegisterHit(spawner))
+                    {
+                        spawner.TakeDamage(20);
+                    }
+                }
+            }
+        }
         public void Draw(SpriteBatch sb)
         {
             foreach (var spawner in spawners)

@@ -17,6 +17,11 @@ namespace TwinStick
         public Texture2D Texture;
         public Spawner OriginSpawner;
 
+        private Vector2 knockbackVelocity = Vector2.Zero;
+        private float knockbackTimer = 0f;
+        public float KnockbackDuration = 0.2f;
+        public float KnockbackDecay = 8f;
+
         public Rectangle BoundingBox => new Rectangle(
             (int)Position.X - Texture.Width / 2,
             (int)Position.Y - Texture.Height / 2,
@@ -32,12 +37,22 @@ namespace TwinStick
         {
             float delta = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-            Vector2 direction = playerPosition - Position;
-            if (direction != Vector2.Zero)
+            if (knockbackTimer > 0f)
             {
-                direction.Normalize();
-                Vector2 movement = direction * Speed * delta;
-                TryMove(movement, map);
+                knockbackTimer -= delta;
+                TryMove(knockbackVelocity * delta, map);
+
+                knockbackVelocity *= System.MathF.Max(0f, 1f - KnockbackDecay * delta);
+            }
+            else
+            {
+                Vector2 direction = playerPosition - Position;
+                if (direction != Vector2.Zero)
+                {
+                    direction.Normalize();
+                    Vector2 movement = direction * Speed * delta;
+                    TryMove(movement, map);
+                }
             }
         }
 
@@ -82,6 +97,17 @@ namespace TwinStick
                 IsActive = false;
                 OriginSpawner?.NotifyEnemyDied();
             }
+        }
+
+        public void ApplyKnockback(Vector2 direction, float force)
+        {
+            if (direction != Vector2.Zero)
+            {
+                direction.Normalize();
+            }
+
+            knockbackVelocity = direction * force;
+            knockbackTimer = KnockbackDuration;
         }
 
         public void Draw(SpriteBatch sb)

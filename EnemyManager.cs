@@ -52,6 +52,23 @@ namespace TwinStick
             }
         }
 
+        public void CheckMeleeCollisions(MeleeAttack melee, Vector2 meleeOrigin)
+        {
+            foreach (var enemy in enemies)
+            {
+                if (enemy.IsActive && melee.IsInArc(enemy.Position))
+                {
+                    if (melee.TryRegisterHit(enemy))
+                    {
+                        enemy.TakeDamage(20);
+
+                        Vector2 knockbackDirection = enemy.Position - meleeOrigin;
+                        enemy.ApplyKnockback(knockbackDirection, 400f);
+                    }
+                }
+            }
+        }
+
         public void Draw(SpriteBatch sb)
         {
             foreach(var enemy in enemies)

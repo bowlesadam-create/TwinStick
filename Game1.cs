@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.Serialization.Formatters;
 
 namespace TwinStick
@@ -18,6 +19,9 @@ namespace TwinStick
 
         private ProjectileManager projectileManager;
         private Texture2D projectileTexture;
+
+        private MeleeAttack meleeAttack = new MeleeAttack();
+        private MouseState previousMouseState;
 
         private TiledMap tiledMap;
         private Texture2D floorTexture;
@@ -117,6 +121,19 @@ namespace TwinStick
 
             // TODO: Add your update logic here
             player.Update(gameTime, camera, tiledMap);
+            MouseState mouse = Mouse.GetState();
+            bool rightClicked = mouse.RightButton == ButtonState.Pressed && previousMouseState.RightButton == ButtonState.Released;
+            if (rightClicked && !meleeAttack.IsActive)
+            {
+                meleeAttack.Trigger(player.Position, player.Rotation);
+            }
+            meleeAttack.Update(gameTime);
+            previousMouseState = mouse;
+            if (meleeAttack.IsActive)
+            {
+                enemyManager.CheckMeleeCollisions(meleeAttack, player.Position);
+                spawnerManager.CheckMeleeCollisions(meleeAttack);
+            }
             camera.Follow(player.Position);
             projectileManager.Update(gameTime, player, camera.RoomBounds);
             enemyManager.Update(gameTime, player.Position, tiledMap);
@@ -132,15 +149,19 @@ namespace TwinStick
             GraphicsDevice.Clear(Color.Black);
 
             // TODO: Add your drawing code here
+
+            // WORLD 
             _spriteBatch.Begin(transformMatrix: camera.GetTransformMatrix());
             tiledMap.Draw(_spriteBatch, floorTexture,wallTexture);
             DrawDebugGrid(_spriteBatch, 64, camera.RoomBounds);
             player.Draw(_spriteBatch);
+            meleeAttack.Draw(_spriteBatch, pixelTexture);
             projectileManager.Draw(_spriteBatch);
             enemyManager.Draw(_spriteBatch);
             spawnerManager.Draw(_spriteBatch);
             _spriteBatch.End();
 
+            // SCREEN
             _spriteBatch.Begin();
             minimap.Draw(_spriteBatch, player.Position, enemyManager.GetEnemyPositions(), spawnerManager.GetSpawnerPositions());
             _spriteBatch.End();

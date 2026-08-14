@@ -22,6 +22,9 @@ namespace TwinStick
         private Vector2 dashDirection;
         private bool isDashing = false;
 
+
+
+
         private KeyboardState previousKeyboardState;
 
         public Rectangle BoundingBox => new Rectangle(
