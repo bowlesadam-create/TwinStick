@@ -22,7 +22,7 @@ namespace TwinStick
         private Vector2 dashDirection;
         private bool isDashing = false;
 
-
+        public bool HasKey = false;
 
 
         private KeyboardState previousKeyboardState;

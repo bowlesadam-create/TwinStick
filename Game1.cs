@@ -35,6 +35,12 @@ namespace TwinStick
 
         private Minimap minimap;
 
+        private Texture2D keyTexture;
+        private Texture2D exitTexture;
+
+        Key key;
+        ExitDoor exitDoor;
+
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
@@ -104,12 +110,36 @@ namespace TwinStick
             for (int i = 0; i < spawnerData.Length; i++) spawnerData[i] = Color.White;
             spawnerTexture.SetData(spawnerData);
 
+            keyTexture = new Texture2D(GraphicsDevice, 8, 8);
+            Color[] keyData = new Color[8 * 8];
+            for (int i = 0; i < keyData.Length; i++) keyData[i] = Color.White;
+            keyTexture.SetData(keyData);
+
+            exitTexture = new Texture2D(GraphicsDevice, 32, 32);
+            Color[] exitData = new Color[32 * 32];
+            for (int i = 0;i < exitData.Length; i++) exitData[i] = Color.White;
+            exitTexture.SetData(exitData);
+
+
             spawnerManager = new SpawnerManager(spawnerTexture);
             foreach (var obj in tiledMap.Objects)
             {
-                if (obj.Type == "Spawner")
+                switch (obj.Type)
                 {
-                    spawnerManager.AddSpawner(obj.Position);
+                    case "Spawner":
+                        spawnerManager.AddSpawner(obj.Position);
+                        break;
+                    case "Enemy":
+                        enemyManager.SpawnEnemy(obj.Position);
+                        break;
+                    case "Key":
+                        key = new Key(obj.Position, keyTexture);
+                        break;
+                    case "Exit":
+                        Rectangle triggerArea = new Rectangle((int)obj.Position.X, (int)obj.Position.Y, obj.Width, obj.Height);
+                        exitDoor = new ExitDoor(exitTexture, triggerArea);
+                        System.Diagnostics.Debug.WriteLine($"Exit door created at {triggerArea}");
+                        break;
                 }
             }
 
@@ -146,6 +176,8 @@ namespace TwinStick
             enemyManager.CheckProjectileCollision(projectileManager.Projectiles);
             spawnerManager.Update(gameTime, enemyManager);
             spawnerManager.CheckProjectileCollisions(projectileManager.Projectiles);
+            key?.CheckPickup(player);
+            exitDoor?.Update(player);
 
             base.Update(gameTime);
         }
@@ -165,6 +197,8 @@ namespace TwinStick
             projectileManager.Draw(_spriteBatch);
             enemyManager.Draw(_spriteBatch);
             spawnerManager.Draw(_spriteBatch);
+            key?.Draw(_spriteBatch);
+            exitDoor?.Draw(_spriteBatch, player);
             _spriteBatch.End();
 
             // SCREEN

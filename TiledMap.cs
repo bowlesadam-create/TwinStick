@@ -14,6 +14,8 @@ namespace TwinStick
             public string Name;
             public string Type;
             public Vector2 Position;
+            public int Width;
+            public int Height;
         }
 
         public List<TiledObject> Objects = new List<TiledObject>();
@@ -96,6 +98,9 @@ namespace TwinStick
                     float x = (float)objectElement.Attribute("x");
                     float y = (float)objectElement.Attribute("y");
                     obj.Position = new Vector2(x, y);
+
+                    obj.Width = objectElement.Attribute("width") != null ? (int)objectElement.Attribute("width") : 0;
+                    obj.Height = objectElement.Attribute("height") != null ? (int)objectElement.Attribute("height") : 0;
 
                     XElement propertiesElement = objectElement.Element("properties");
                     if(propertiesElement != null)
