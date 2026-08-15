@@ -99,8 +99,8 @@ namespace TwinStick
             enemyManager.SpawnEnemy(new Vector2(960, 200));
             enemyManager.SpawnEnemy(new Vector2(1200, 700));
 
-            spawnerTexture = new Texture2D(GraphicsDevice, 36, 36);
-            Color[] spawnerData = new Color[36 * 36];
+            spawnerTexture = new Texture2D(GraphicsDevice, 44, 44);
+            Color[] spawnerData = new Color[44 * 44];
             for (int i = 0; i < spawnerData.Length; i++) spawnerData[i] = Color.White;
             spawnerTexture.SetData(spawnerData);
 

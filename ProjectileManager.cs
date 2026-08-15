@@ -14,7 +14,7 @@ namespace TwinStick
         private List<Projectile> projectiles = new List<Projectile>();
         private Texture2D projectileTexture;
         private float fireCooldown = 0f;
-        private float fireRate = 0.15f;
+        private float fireRate = 0.3f;
 
         private MouseState previousMouseState;
 

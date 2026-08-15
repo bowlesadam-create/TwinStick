@@ -15,10 +15,10 @@ namespace TwinStick
         public bool IsActive = true;
         public Texture2D Texture;
 
-        public float SpawnInterval = 0.5f;
+        public float SpawnInterval = 2.0f;
         private float spawnTimer;
 
-        public int MaxAliveFromThisSpawner = 10; // Some way to stop the level from getting too flooded
+        public int MaxAliveFromThisSpawner = 4; // Some way to stop the level from getting too flooded
         private int aliveCount = 0;
 
         public Rectangle BoundingBox => new Rectangle(
