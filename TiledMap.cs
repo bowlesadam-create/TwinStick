@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Xml.Linq;
@@ -8,6 +9,15 @@ namespace TwinStick
 {
     internal class TiledMap
     {
+        public class TiledObject
+        {
+            public string Name;
+            public string Type;
+            public Vector2 Position;
+        }
+
+        public List<TiledObject> Objects = new List<TiledObject>();
+
         public int Width;   // In Tiles
         public int Height;  // In Tiles
         public int TileWidth;
@@ -74,6 +84,42 @@ namespace TwinStick
                 map.TileGrid[x,y] = tileId;
             }
 
+            XElement objectGroupElement = root.Element("objectgroup");
+            System.Diagnostics.Debug.WriteLine($"Object group found: {objectGroupElement != null}");
+            if (objectGroupElement != null) 
+            {
+                foreach (XElement objectElement in objectGroupElement.Elements("object"))
+                {
+                    TiledObject obj = new TiledObject();
+                    obj.Name = (string)objectElement.Attribute("name") ?? "";
+
+                    float x = (float)objectElement.Attribute("x");
+                    float y = (float)objectElement.Attribute("y");
+                    obj.Position = new Vector2(x, y);
+
+                    XElement propertiesElement = objectElement.Element("properties");
+                    if(propertiesElement != null)
+                    {
+                        foreach (XElement propertyElement in propertiesElement.Elements("property"))
+                        {
+                            string propName = (string)propertyElement.Attribute("name");
+                            string propValue = (string)propertyElement.Attribute("value");
+
+                            if (propName == "Type")
+                            {
+                                obj.Type = propValue;
+                            }
+                        }
+                    }
+
+                    map.Objects.Add(obj);
+                }
+            }
+            System.Diagnostics.Debug.WriteLine($"Objects found: {map.Objects.Count}");
+            foreach (var obj in map.Objects)
+            {
+                System.Diagnostics.Debug.WriteLine($"  Object: Name='{obj.Name}', Type='{obj.Type}', Pos={obj.Position}");
+            }
             return map;
         }
 

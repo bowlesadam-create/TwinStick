@@ -105,7 +105,13 @@ namespace TwinStick
             spawnerTexture.SetData(spawnerData);
 
             spawnerManager = new SpawnerManager(spawnerTexture);
-            spawnerManager.AddSpawner(new Vector2(700, 400));
+            foreach (var obj in tiledMap.Objects)
+            {
+                if (obj.Type == "Spawner")
+                {
+                    spawnerManager.AddSpawner(obj.Position);
+                }
+            }
 
             Rectangle minimapBounds = new Rectangle(
                 GraphicsDevice.Viewport.Width - 220, 20,
