@@ -39,6 +39,8 @@ namespace TwinStick
             map.TileWidth = (int)root.Attribute("tilewidth");
             map.TileHeight = (int)root.Attribute("tileheight");
 
+
+
             // Tile Set Parsing (external .tsx file)
             XElement tilesetElement = root.Element("tileset");
             int firstGid = (int)tilesetElement.Attribute("firstgid");

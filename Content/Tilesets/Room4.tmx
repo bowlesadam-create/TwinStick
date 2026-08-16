@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.10" tiledversion="1.12.2" orientation="orthogonal" renderorder="right-down" width="30" height="24" tilewidth="32" tileheight="32" infinite="0" nextlayerid="3" nextobjectid="14">
+ <tileset firstgid="1" source="../../../../../../OneDrive/Desktop/TwinStick/TwinStick/Content/Tilesets/tileset.tsx"/>
+ <layer id="1" name="Tile Layer 1" width="30" height="24">
+  <data encoding="csv">
+2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,
+2,2,2,2,2,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,1,1,1,1,1,2,2,
+2,2,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,1,1,1,1,1,1,2,2,
+2,2,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,1,1,1,1,1,1,2,2,
+2,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,
+2,2,1,1,1,1,1,1,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,
+2,2,1,1,2,1,1,1,2,2,1,1,1,1,1,2,2,1,1,1,1,1,1,1,2,2,2,2,2,2,
+2,2,1,1,2,1,1,1,1,1,1,1,1,1,1,2,2,1,1,1,1,1,1,1,1,2,2,2,2,2,
+2,2,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,
+2,2,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,
+2,2,1,1,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,1,1,1,1,1,1,2,2,2,
+2,2,1,1,2,2,2,1,1,1,1,1,1,1,1,1,1,1,1,2,2,1,1,1,1,1,1,1,2,2,
+2,2,1,1,2,2,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,
+2,2,1,1,2,2,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,
+2,2,1,1,2,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,
+2,2,1,1,2,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,
+2,2,1,1,1,2,1,1,1,2,2,2,1,1,1,1,1,1,1,1,2,2,1,1,1,1,1,1,2,2,
+2,2,2,1,1,1,1,1,1,2,2,2,1,1,1,1,1,1,1,1,2,2,1,1,1,1,1,1,1,2,
+2,2,1,1,1,1,1,1,2,2,2,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,
+2,1,1,1,1,1,1,2,2,2,2,2,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,
+2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,
+2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,1,1,1,1,1,1,1,1,2,2,2,
+2,2,2,1,1,1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,
+2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2
+</data>
+ </layer>
+ <objectgroup id="2" name="Object Layer 1">
+  <object id="1" name="PlayerSpawn" x="109.333" y="646.667">
+   <properties>
+    <property name="Type" value="PlayerSpawn"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="4" name="Exit" x="828" y="33.3333" width="62.6667" height="60">
+   <properties>
+    <property name="Type" value="Exit"/>
+   </properties>
+  </object>
+  <object id="5" name="EnemySpawner" x="718.667" y="160">
+   <properties>
+    <property name="Type" value="EnemySpawner"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="6" name="EnemySpawner" x="725.333" y="266.667">
+   <properties>
+    <property name="Type" value="EnemySpawner"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="7" name="EnemySpawner" x="589.333" y="157.333">
+   <properties>
+    <property name="Type" value="EnemySpawner"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="8" name="EnemySpawner" x="545.333" y="321.333">
+   <properties>
+    <property name="Type" value="EnemySpawner"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="9" name="EnemySpawner" x="221.333" y="100">
+   <properties>
+    <property name="Type" value="EnemySpawner"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="10" name="EnemySpawner" x="782.667" y="668">
+   <properties>
+    <property name="Type" value="EnemySpawner"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="11" name="EnemySpawner" x="732" y="436">
+   <properties>
+    <property name="Type" value="EnemySpawner"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="12" name="EnemySpawner" x="437.333" y="152">
+   <properties>
+    <property name="Type" value="EnemySpawner"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="13" name="Key" x="716" y="161.333">
+   <properties>
+    <property name="Type" value="Key"/>
+   </properties>
+   <point/>
+  </object>
+ </objectgroup>
+</map>

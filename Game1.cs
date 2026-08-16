@@ -35,6 +35,15 @@ namespace TwinStick
 
         private Minimap minimap;
 
+        private string[] roomSequence = new[]
+        {
+            "Content/Tilesets/Room1.tmx",
+            "Content/Tilesets/Room2.tmx",
+            "Content/Tilesets/Room3.tmx",
+            "Content/Tilesets/Room4.tmx"
+        };
+        private int currentRoomIndex = 0;
+
         private Texture2D keyTexture;
         private Texture2D exitTexture;
 
@@ -73,14 +82,14 @@ namespace TwinStick
             pixelTexture = new Texture2D(GraphicsDevice, 1, 1);
             pixelTexture.SetData(new[] { Color.White });
 
-            player = new Player(playerTexture, pixelTexture, new Vector2(960, 540));
+/*            player = new Player(playerTexture, pixelTexture, new Vector2(960, 540));*/
 
             projectileTexture = new Texture2D(GraphicsDevice, 8, 8);
             Color[] projData = new Color[8 * 8];
             for (int i = 0; i < projData.Length;i++) projData[i] = Color.White;
             projectileTexture.SetData(projData);
 
-            projectileManager = new ProjectileManager(projectileTexture);
+/*            projectileManager = new ProjectileManager(projectileTexture);*/
 
             floorTexture = new Texture2D(GraphicsDevice, 32, 32);
             Color[] floorData = new Color[32 * 32];
@@ -92,18 +101,18 @@ namespace TwinStick
             for (int i = 0; i < wallData.Length; i++) wallData[i] = Color.SaddleBrown;
             wallTexture.SetData(wallData);
             
-            tiledMap = TiledMap.Load("Content/Tilesets/testMap.tmx");
+/*            tiledMap = TiledMap.Load("Content/Tilesets/testMap.tmx");*/
 
             enemyTexture = new Texture2D(GraphicsDevice, 28, 28);
             Color[] enemyData = new Color[28 * 28];
             for (int i = 0; i < enemyData.Length; i++) enemyData[i] = Color.White;
             enemyTexture.SetData(enemyData);
 
-            enemyManager = new EnemyManager(enemyTexture);
+/*            enemyManager = new EnemyManager(enemyTexture);
 
             // temporary hardcoded spawn for testing, before object-layer parsing exists
             enemyManager.SpawnEnemy(new Vector2(960, 200));
-            enemyManager.SpawnEnemy(new Vector2(1200, 700));
+            enemyManager.SpawnEnemy(new Vector2(1200, 700));*/
 
             spawnerTexture = new Texture2D(GraphicsDevice, 44, 44);
             Color[] spawnerData = new Color[44 * 44];
@@ -121,7 +130,7 @@ namespace TwinStick
             exitTexture.SetData(exitData);
 
 
-            spawnerManager = new SpawnerManager(spawnerTexture);
+/*            spawnerManager = new SpawnerManager(spawnerTexture);
             foreach (var obj in tiledMap.Objects)
             {
                 switch (obj.Type)
@@ -146,7 +155,9 @@ namespace TwinStick
             Rectangle minimapBounds = new Rectangle(
                 GraphicsDevice.Viewport.Width - 220, 20,
                 200, 200 * tiledMap.Height / tiledMap.Width);
-            minimap = new Minimap(pixelTexture, tiledMap, minimapBounds);
+            minimap = new Minimap(pixelTexture, tiledMap, minimapBounds);*/
+
+            LoadRoom(roomSequence[currentRoomIndex]);
 
         }
 
@@ -154,6 +165,21 @@ namespace TwinStick
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
+
+            if (exitDoor != null && exitDoor.IsTriggered)
+            {
+                currentRoomIndex++;
+                if(currentRoomIndex >= roomSequence.Length)
+                {
+                    // WIN THE GAME!
+                    System.Diagnostics.Debug.WriteLine("YOU WIN!");
+                    currentRoomIndex = roomSequence.Length - 1;
+                }
+                else
+                {
+                    LoadRoom(roomSequence[currentRoomIndex]);
+                }
+            }
 
             // TODO: Add your update logic here
             player.Update(gameTime, camera, tiledMap);
@@ -231,9 +257,56 @@ namespace TwinStick
 
         private void RestartGame()
         {
-            player.Health = player.MaxHealth;
-            player.IsDead = false;
-            player.Position = new Vector2(960, 540);
+            LoadRoom(roomSequence[currentRoomIndex]);
+        }
+
+        private void LoadRoom(string roomPath)
+        {
+            System.Diagnostics.Debug.WriteLine($"Loading room from: {roomPath}");
+            tiledMap = TiledMap.Load(roomPath);
+
+            Rectangle roomBounds = new Rectangle(0,0, tiledMap.Width * tiledMap.TileWidth, tiledMap.Height * tiledMap.TileHeight);
+            camera = new Camera(GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height, roomBounds);
+
+            enemyManager = new EnemyManager(enemyTexture);
+            spawnerManager = new SpawnerManager(spawnerTexture);
+            projectileManager = new ProjectileManager(projectileTexture);
+            meleeAttack = new MeleeAttack();
+
+            key = null;
+            exitDoor = null;
+
+            Vector2 spawnPosition = new Vector2(960, 540); // fallback position
+
+            foreach (var obj in tiledMap.Objects)
+            {
+                switch (obj.Type)
+                {
+                    case "Spawner":
+                        spawnerManager.AddSpawner(obj.Position);
+                        break;
+                    case "Enemy":
+                        enemyManager.SpawnEnemy(obj.Position);
+                        break;
+                    case "Key":
+                        key = new Key(obj.Position, keyTexture);
+                        break;
+                    case "Exit":
+                        Rectangle triggerArea = new Rectangle((int)obj.Position.X, (int)obj.Position.Y, obj.Width, obj.Height);
+                        exitDoor = new ExitDoor(exitTexture,triggerArea);
+                        break;
+                    case "PlayerSpawn":
+                        spawnPosition = obj.Position;
+                        break;
+                }
+            }
+
+            player = new Player(playerTexture, pixelTexture, spawnPosition);
+
+            Rectangle minimapBounds = new Rectangle(
+               GraphicsDevice.Viewport.Width - 220, 20,
+               200, 200 * tiledMap.Height / tiledMap.Width);
+            minimap = new Minimap(pixelTexture, tiledMap, minimapBounds);
         }
     }
 }

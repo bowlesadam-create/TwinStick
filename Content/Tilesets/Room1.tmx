@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.10" tiledversion="1.12.2" orientation="orthogonal" renderorder="right-down" width="30" height="8" tilewidth="32" tileheight="32" infinite="0" nextlayerid="3" nextobjectid="7">
+ <tileset firstgid="1" source="../../../../../../OneDrive/Desktop/TwinStick/TwinStick/Content/Tilesets/tileset.tsx"/>
+ <layer id="1" name="Tile Layer 1" width="30" height="8">
+  <data encoding="csv">
+2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,
+2,2,2,2,2,2,1,1,1,1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,
+2,2,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,1,1,1,1,2,2,2,2,2,2,2,
+2,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,1,1,1,1,1,1,1,2,2,2,2,2,2,
+2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,
+2,2,2,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,
+2,2,2,2,2,2,2,1,1,1,1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,
+2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2
+</data>
+ </layer>
+ <objectgroup id="2" name="Object Layer 1">
+  <object id="1" name="PlayerSpawn" x="113.333" y="113.333">
+   <properties>
+    <property name="Type" value="PlayerSpawn"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="2" name="Key" x="542.667" y="156">
+   <properties>
+    <property name="Type" value="Key"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="3" x="705.5" y="97" width="61" height="61"/>
+  <object id="4" name="Exit" x="767" y="159" width="0.5">
+   <properties>
+    <property name="Type" value="Exit"/>
+   </properties>
+  </object>
+ </objectgroup>
+</map>
