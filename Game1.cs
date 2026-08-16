@@ -174,6 +174,13 @@ namespace TwinStick
             projectileManager.Update(gameTime, player, camera.RoomBounds);
             enemyManager.Update(gameTime, player.Position, tiledMap);
             enemyManager.CheckProjectileCollision(projectileManager.Projectiles);
+            enemyManager.CheckPlayerCollisions(player);
+            if (player.IsDead)
+            {
+                // Game Over
+                if (Keyboard.GetState().IsKeyDown(Keys.R))
+                    RestartGame();
+            }
             spawnerManager.Update(gameTime, enemyManager);
             spawnerManager.CheckProjectileCollisions(projectileManager.Projectiles);
             key?.CheckPickup(player);
@@ -220,6 +227,13 @@ namespace TwinStick
             {
                 sb.Draw(pixelTexture, new Rectangle(bounds.Left, y, bounds.Width, 1), Color.Gray);
             }
+        }
+
+        private void RestartGame()
+        {
+            player.Health = player.MaxHealth;
+            player.IsDead = false;
+            player.Position = new Vector2(960, 540);
         }
     }
 }

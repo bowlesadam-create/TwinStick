@@ -52,6 +52,18 @@ namespace TwinStick
             }
         }
 
+        public void CheckPlayerCollisions(Player player)
+        {
+            foreach (var enemy in enemies)
+            {
+             
+                if (enemy.IsActive && enemy.BoundingBox.Intersects(player.BoundingBox))
+                {
+                    player.TakeDamage(10);
+                }
+            }
+        }
+
         public void CheckMeleeCollisions(MeleeAttack melee, Vector2 meleeOrigin)
         {
             foreach (var enemy in enemies)

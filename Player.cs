@@ -24,6 +24,12 @@ namespace TwinStick
 
         public bool HasKey = false;
 
+        public int MaxHealth = 100;
+        public int Health = 100;
+        public bool IsDead = false;
+
+        public float InvincibilityDuration = 1f;
+        private float invincibilityTimer = 0f;
 
         private KeyboardState previousKeyboardState;
 
@@ -42,6 +48,14 @@ namespace TwinStick
         public void Update(GameTime gameTime, Camera camera, TiledMap map)
         {
             float delta = (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+            if (invincibilityTimer > 0f)
+            {
+                invincibilityTimer -= delta;
+            }
+
+            if (IsDead)
+                return;
 
             HandleDashInput(delta);
 
@@ -160,11 +174,32 @@ namespace TwinStick
             }
         }
 
+        public void TakeDamage(int amount)
+        {
+            if (invincibilityTimer > 0 || IsDead)
+                return;
+
+            Health -= amount;
+            invincibilityTimer = InvincibilityDuration;
+
+            System.Diagnostics.Debug.WriteLine($"Player took damage. Health={Health}, IsDead={IsDead}");
+
+            if (Health <= 0)
+            {
+                Health = 0;
+                IsDead = true;
+            }
+        }
+
         public void Draw(SpriteBatch sb)
         {
-            Vector2 origin = new Vector2(Texture.Width / 2f, Texture.Height / 2);
-            sb.Draw(Texture, Position, null, Color.White, 0f, origin, 1f, SpriteEffects.None, 0f);
+            bool visibile = invincibilityTimer <= 0 || (int)(invincibilityTimer*10) % 2 == 0;
 
+            if (visibile)
+            {
+                Vector2 origin = new Vector2(Texture.Width / 2f, Texture.Height / 2);
+                sb.Draw(Texture, Position, null, Color.White, 0f, origin, 1f, SpriteEffects.None, 0f);
+            }
             DrawFacingLine(sb);
         }
 
