@@ -49,6 +49,10 @@ namespace TwinStick
             string tilesetSource = (string)tilesetElement.Attribute("source");
             string tilesetPath = System.IO.Path.GetFullPath(System.IO.Path.Combine(tmxDirectory, tilesetSource));
 
+            System.Diagnostics.Debug.WriteLine($"tmxDirectory: {tmxDirectory}");
+            System.Diagnostics.Debug.WriteLine($"tilesetSource: {tilesetSource}");
+            System.Diagnostics.Debug.WriteLine($"tilesetPath: {tilesetPath}");
+
             XDocument tilesetDoc = XDocument.Load(tilesetPath);
             XElement tilesetRoot = tilesetDoc.Element("tileset");
 
@@ -78,8 +82,6 @@ namespace TwinStick
 
             map.TileGrid = new int[map.Width,map.Height];
             string[] values = csv.Split(new[] { ',', '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
-            System.Diagnostics.Debug.WriteLine($"Width={map.Width}, Height={map.Height}, Expected cells={map.Width * map.Height}");
-            System.Diagnostics.Debug.WriteLine($"values.Length={values.Length}");
             for (int i = 0; i < values.Length; i++) 
             {
                 int tileId = int.Parse(values[i].Trim());
@@ -89,7 +91,6 @@ namespace TwinStick
             }
 
             XElement objectGroupElement = root.Element("objectgroup");
-            System.Diagnostics.Debug.WriteLine($"Object group found: {objectGroupElement != null}");
             if (objectGroupElement != null) 
             {
                 foreach (XElement objectElement in objectGroupElement.Elements("object"))

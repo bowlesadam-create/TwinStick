@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.10" tiledversion="1.12.2" orientation="orthogonal" renderorder="right-down" width="30" height="24" tilewidth="32" tileheight="32" infinite="0" nextlayerid="3" nextobjectid="10">
- <tileset firstgid="1" source="../../../../../../OneDrive/Desktop/TwinStick/TwinStick/Content/Tilesets/tileset.tsx"/>
+ <tileset firstgid="1" source="tileset.tsx"/>
  <layer id="1" name="Tile Layer 1" width="30" height="24">
   <data encoding="csv">
 2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,
@@ -30,7 +30,7 @@
 </data>
  </layer>
  <objectgroup id="2" name="Object Layer 1">
-  <object id="1" name="Exit" x="825.333" y="577.333" width="65.3333" height="66.6667">
+  <object id="1" name="Exit" x="832" y="448" width="65" height="66">
    <properties>
     <property name="Type" value="Exit"/>
    </properties>
@@ -55,19 +55,19 @@
   </object>
   <object id="6" name="EnemySpawner" x="349.333" y="408">
    <properties>
-    <property name="Type" value="EnemySpawner"/>
+    <property name="Type" value="Spawner"/>
    </properties>
    <point/>
   </object>
   <object id="7" name="EnemySpawner" x="226.667" y="622.667">
    <properties>
-    <property name="Type" value="EnemySpawner"/>
+    <property name="Type" value="Spawner"/>
    </properties>
    <point/>
   </object>
   <object id="8" name="EnemySpawner" x="500" y="648">
    <properties>
-    <property name="Type" value="EnemySpawner"/>
+    <property name="Type" value="Spawner"/>
    </properties>
    <point/>
   </object>

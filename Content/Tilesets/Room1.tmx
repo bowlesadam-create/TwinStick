@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.10" tiledversion="1.12.2" orientation="orthogonal" renderorder="right-down" width="30" height="8" tilewidth="32" tileheight="32" infinite="0" nextlayerid="3" nextobjectid="7">
- <tileset firstgid="1" source="../../../../../../OneDrive/Desktop/TwinStick/TwinStick/Content/Tilesets/tileset.tsx"/>
+ <tileset firstgid="1" source="tileset.tsx"/>
  <layer id="1" name="Tile Layer 1" width="30" height="8">
   <data encoding="csv">
 2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,
@@ -26,8 +26,7 @@
    </properties>
    <point/>
   </object>
-  <object id="3" x="705.5" y="97" width="61" height="61"/>
-  <object id="4" name="Exit" x="767" y="159" width="0.5">
+  <object id="3" name="Exit" x="704" y="96" width="64" height="64">
    <properties>
     <property name="Type" value="Exit"/>
    </properties>
