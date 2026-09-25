@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
@@ -16,13 +17,16 @@ namespace TwinStick
         private float fireCooldown = 0f;
         private float fireRate = 0.3f;
 
+        private SoundEffect shootSound;
+
         private MouseState previousMouseState;
 
         public List<Projectile> Projectiles => projectiles;
 
-        public ProjectileManager(Texture2D projectileTexture)
+        public ProjectileManager(Texture2D projectileTexture, SoundEffect shootSound)
         {
             this.projectileTexture = projectileTexture;
+            this.shootSound = shootSound;
         }
 
         public void Update(GameTime gameTime, Player player, Rectangle roomBounds)
@@ -52,6 +56,7 @@ namespace TwinStick
         {
             Projectile newProjectile = new Projectile(projectileTexture, player.Position, player.Rotation);
             projectiles.Add(newProjectile);
+            shootSound.Play();
         }
 
         public void Draw(SpriteBatch sb)
