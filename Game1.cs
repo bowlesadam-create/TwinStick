@@ -55,6 +55,7 @@ namespace TwinStick
         private SpriteFont font;
 
         private SoundEffect shootSound;
+        private SoundEffect pickupSound;
         //private Song bgSong;
 
         public enum GameState
@@ -148,6 +149,8 @@ namespace TwinStick
             font = Content.Load<SpriteFont>("default");
 
             shootSound = Content.Load<SoundEffect>("shoot");
+            pickupSound = Content.Load<SoundEffect>("pickup");
+            
             System.Diagnostics.Debug.WriteLine($"shoot sound loaded: {shootSound != null}");
             //bgSong = Content.Load
 
@@ -412,7 +415,7 @@ namespace TwinStick
                         enemyManager.SpawnEnemy(obj.Position);
                         break;
                     case "Key":
-                        key = new Key(obj.Position, keyTexture);
+                        key = new Key(obj.Position, keyTexture, pickupSound);
                         break;
                     case "Exit":
                         Rectangle triggerArea = new Rectangle((int)obj.Position.X, (int)obj.Position.Y, obj.Width, obj.Height);

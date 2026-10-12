@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -14,15 +15,19 @@ namespace TwinStick
         public bool IsCollected = false;
         public Texture2D Texture;
 
+        private SoundEffect pickup;
+
         public Rectangle BoundingBox => new Rectangle(
             (int)Position.X - Texture.Width / 2,
             (int)Position.Y - Texture.Height / 2,
             Texture.Width, Texture.Height);
 
-        public Key(Vector2 position, Texture2D texture)
+        public Key(Vector2 position, Texture2D texture, SoundEffect pickup)
         {
             Position = position;
             Texture = texture;
+
+            this.pickup = pickup;
         }
 
         public void CheckPickup(Player player)
@@ -33,6 +38,7 @@ namespace TwinStick
             {
                 IsCollected = true;
                 player.HasKey = true;
+                pickup.Play();
             }
         }
 

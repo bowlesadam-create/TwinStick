@@ -20,6 +20,12 @@
 /processorParam:TextureFormat=Compressed
 /build:File.spritefont;default.spritefont
 
+#begin pickup.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:pickup.wav
+
 #begin shoot.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
