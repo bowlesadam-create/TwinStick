@@ -1,6 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Media;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.Serialization.Formatters;
@@ -49,6 +51,20 @@ namespace TwinStick
 
         Key key;
         ExitDoor exitDoor;
+
+        private SpriteFont font;
+
+        private SoundEffect shootSound;
+        //private Song bgSong;
+
+        public enum GameState
+        {
+            StartScreen,
+            Playing,
+            GameOver,
+            Victory
+        }
+        private GameState currentState = GameState.StartScreen;
 
         public Game1()
         {
@@ -129,6 +145,14 @@ namespace TwinStick
             for (int i = 0;i < exitData.Length; i++) exitData[i] = Color.White;
             exitTexture.SetData(exitData);
 
+            font = Content.Load<SpriteFont>("default");
+
+            shootSound = Content.Load<SoundEffect>("shoot");
+            System.Diagnostics.Debug.WriteLine($"shoot sound loaded: {shootSound != null}");
+            //bgSong = Content.Load
+
+            MediaPlayer.IsRepeating = true;
+            MediaPlayer.Volume = 0.5f;
 
 /*            spawnerManager = new SpawnerManager(spawnerTexture);
             foreach (var obj in tiledMap.Objects)
@@ -157,7 +181,8 @@ namespace TwinStick
                 200, 200 * tiledMap.Height / tiledMap.Width);
             minimap = new Minimap(pixelTexture, tiledMap, minimapBounds);*/
 
-            LoadRoom(roomSequence[currentRoomIndex]);
+            // Moved out to game states
+            //LoadRoom(roomSequence[currentRoomIndex]);
 
         }
 
@@ -166,14 +191,47 @@ namespace TwinStick
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
+            switch (currentState)
+            {
+                case GameState.StartScreen:
+                    UpdateStartScreen();
+                    break;
+                case GameState.Playing:
+                    UpdatePlaying(gameTime);
+                    break;
+                case GameState.Victory:
+                    UpdateVictory();
+                    break;
+                case GameState.GameOver:
+                    UpdateGameOver();
+                    break;
+
+            }
+
+            
+            base.Update(gameTime);
+        }
+
+        private void UpdateStartScreen()
+        {
+            if (Keyboard.GetState().IsKeyDown(Keys.Enter))
+            {
+                currentRoomIndex = 0;
+                LoadRoom(roomSequence[currentRoomIndex]);
+                currentState = GameState.Playing;
+                // MediaPlayer.Play(backgroundMusic);
+            }
+        }
+
+        private void UpdatePlaying(GameTime gameTime)
+        {
             if (exitDoor != null && exitDoor.IsTriggered)
             {
                 currentRoomIndex++;
-                if(currentRoomIndex >= roomSequence.Length)
+                if (currentRoomIndex >= roomSequence.Length)
                 {
                     // WIN THE GAME!
-                    System.Diagnostics.Debug.WriteLine("YOU WIN!");
-                    currentRoomIndex = roomSequence.Length - 1;
+                    currentState = GameState.Victory;
                 }
                 else
                 {
@@ -204,15 +262,32 @@ namespace TwinStick
             if (player.IsDead)
             {
                 // Game Over
-                if (Keyboard.GetState().IsKeyDown(Keys.R))
-                    RestartGame();
+                currentState = GameState.GameOver;
             }
             spawnerManager.Update(gameTime, enemyManager);
             spawnerManager.CheckProjectileCollisions(projectileManager.Projectiles);
             key?.CheckPickup(player);
             exitDoor?.Update(player);
 
-            base.Update(gameTime);
+        }
+
+        private void UpdateVictory()
+        {
+            if (Keyboard.GetState().IsKeyDown(Keys.Enter))
+            {
+                currentRoomIndex = 0;
+                LoadRoom(roomSequence[currentRoomIndex]);
+                currentState = GameState.Playing;
+            }
+        }
+
+        private void UpdateGameOver()
+        {
+            if (Keyboard.GetState().IsKeyDown(Keys.R))
+            {
+                LoadRoom(roomSequence[currentRoomIndex]);
+                currentState = GameState.Playing;
+            }
         }
 
         protected override void Draw(GameTime gameTime)
@@ -220,10 +295,42 @@ namespace TwinStick
             GraphicsDevice.Clear(Color.Black);
 
             // TODO: Add your drawing code here
+            switch (currentState)
+            {
+                case GameState.StartScreen:
+                    DrawStartScreen();
+                    break;
 
+                case GameState.Playing:
+                    DrawPlaying();
+                    break;
+
+                case GameState.Victory:
+                    DrawVictory();
+                    break;
+                case GameState.GameOver:
+                    DrawGameOver();
+                    break;
+            }
+
+            
+
+            base.Draw(gameTime); 
+        }
+
+        private void DrawStartScreen()
+        {
+            _spriteBatch.Begin();
+            _spriteBatch.DrawString(font, "GHETTO GAUNTLET", new Vector2(0, 400), Color.White);
+            _spriteBatch.DrawString(font, "Press ENTER to Start", new Vector2(0, 460), Color.LightGray);
+            _spriteBatch.End();
+        }
+
+        private void DrawPlaying()
+        {
             // WORLD 
             _spriteBatch.Begin(transformMatrix: camera.GetTransformMatrix());
-            tiledMap.Draw(_spriteBatch, floorTexture,wallTexture);
+            tiledMap.Draw(_spriteBatch, floorTexture, wallTexture);
             DrawDebugGrid(_spriteBatch, 64, camera.RoomBounds);
             player.Draw(_spriteBatch);
             meleeAttack.Draw(_spriteBatch, pixelTexture);
@@ -238,8 +345,23 @@ namespace TwinStick
             _spriteBatch.Begin();
             minimap.Draw(_spriteBatch, player.Position, enemyManager.GetEnemyPositions(), spawnerManager.GetSpawnerPositions());
             _spriteBatch.End();
+        }
 
-            base.Draw(gameTime); 
+        private void DrawVictory()
+        {
+            _spriteBatch.Begin();
+            _spriteBatch.DrawString(font, "YOU WIN", new Vector2(0, 400), Color.Gold);
+            _spriteBatch.DrawString(font, "Press ENTER to Play Again", new Vector2(0, 460), Color.White);
+            _spriteBatch.End(); 
+        }
+
+        private void DrawGameOver()
+        {
+            _spriteBatch.Begin();
+            _spriteBatch.Draw(pixelTexture, new Rectangle(0, 0, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height), Color.Black * 0.6f);
+            _spriteBatch.DrawString(font, "YOU HAVE DIED", new Vector2(0,400),Color.White);
+            _spriteBatch.DrawString(font, "Press R to Retry", new Vector2(0, 460), Color.White);
+            _spriteBatch.End();
         }
 
         private void DrawDebugGrid(SpriteBatch sb, int cellSize, Rectangle bounds)
@@ -270,7 +392,8 @@ namespace TwinStick
 
             enemyManager = new EnemyManager(enemyTexture);
             spawnerManager = new SpawnerManager(spawnerTexture);
-            projectileManager = new ProjectileManager(projectileTexture);
+
+            projectileManager = new ProjectileManager(projectileTexture, shootSound);
             meleeAttack = new MeleeAttack();
 
             key = null;
